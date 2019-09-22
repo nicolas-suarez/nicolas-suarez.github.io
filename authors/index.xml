@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Authors | Academic</title>
+    <title>Authors | Nicolás Suárez Chavarría</title>
     <link>https://nicolas-suarez.github.io/authors/</link>
       <atom:link href="https://nicolas-suarez.github.io/authors/index.xml" rel="self" type="application/rss+xml" />
     <description>Authors</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 18 Apr 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/img/icon-192.png</url>
       <title>Authors</title>
@@ -15,12 +15,66 @@
     <item>
       <title></title>
       <link>https://nicolas-suarez.github.io/authors/admin/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Apr 2019 00:00:00 +0000</pubDate>
       <guid>https://nicolas-suarez.github.io/authors/admin/</guid>
-      <description>&lt;p&gt;Nelson Bighetti is a professor of artificial intelligence at the Stanford AI Lab. His research interests include distributed robotics, mobile computing and programmable matter. He leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.&lt;/p&gt;
-
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.&lt;/p&gt;
+      <description>&lt;p&gt;I&amp;rsquo;m an economist from Chile. I&amp;rsquo;m a Ph.D. in Economics student at Stanford University.&lt;/p&gt;
 </description>
+    </item>
+    
+    <item>
+      <title>Dante Contreras</title>
+      <link>https://nicolas-suarez.github.io/authors/dante-contreras/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 -0800</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/dante-contreras/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gabriel Otero</title>
+      <link>https://nicolas-suarez.github.io/authors/gabriel-otero/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 -0800</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/gabriel-otero/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Juan Díaz</title>
+      <link>https://nicolas-suarez.github.io/authors/juan-diaz/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 -0800</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/juan-diaz/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nicolás Suárez</title>
+      <link>https://nicolas-suarez.github.io/authors/nicolas-suarez/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 -0800</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/nicolas-suarez/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Daniel Hojman</title>
+      <link>https://nicolas-suarez.github.io/authors/daniel-hojman/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 -0700</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/daniel-hojman/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Manuel Matas</title>
+      <link>https://nicolas-suarez.github.io/authors/manuel-matas/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 -0700</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/manuel-matas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Patricio Rodríguez</title>
+      <link>https://nicolas-suarez.github.io/authors/patricio-rodriguez/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 -0700</pubDate>
+      <guid>https://nicolas-suarez.github.io/authors/patricio-rodriguez/</guid>
+      <description></description>
     </item>
     
   </channel>

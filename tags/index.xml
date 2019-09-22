@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags | Academic</title>
+    <title>Tags | Nicolás Suárez Chavarría</title>
     <link>https://nicolas-suarez.github.io/tags/</link>
       <atom:link href="https://nicolas-suarez.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <description>Tags</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 01 Mar 2019 00:00:00 -0800</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/img/icon-192.png</url>
       <title>Tags</title>
       <link>https://nicolas-suarez.github.io/tags/</link>
     </image>
+    
+    <item>
+      <title>Published</title>
+      <link>https://nicolas-suarez.github.io/tags/published/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 -0800</pubDate>
+      <guid>https://nicolas-suarez.github.io/tags/published/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Working Papers</title>
+      <link>https://nicolas-suarez.github.io/tags/working-papers/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 -0700</pubDate>
+      <guid>https://nicolas-suarez.github.io/tags/working-papers/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

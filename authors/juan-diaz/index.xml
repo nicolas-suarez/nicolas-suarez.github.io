@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Juan Díaz | Nicolás Suárez Chavarría</title>
+    <link>https://nicolas-suarez.github.io/authors/juan-diaz/</link>
+      <atom:link href="https://nicolas-suarez.github.io/authors/juan-diaz/index.xml" rel="self" type="application/rss+xml" />
+    <description>Juan Díaz</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 01 Mar 2019 00:00:00 -0800</lastBuildDate>
+    <image>
+      <url>https://nicolas-suarez.github.io/img/icon-192.png</url>
+      <title>Juan Díaz</title>
+      <link>https://nicolas-suarez.github.io/authors/juan-diaz/</link>
+    </image>
+    
+    <item>
+      <title>Inequality in social capital in Chile: Assessing the importance of network size and contacts’ occupational prestige on status attainment</title>
+      <link>https://nicolas-suarez.github.io/research/social-networks/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 -0800</pubDate>
+      <guid>https://nicolas-suarez.github.io/research/social-networks/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
