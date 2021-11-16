@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Academic</title>
-    <link>https://nicolas-suarez.github.io/</link>
-      <atom:link href="https://nicolas-suarez.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <description>Academic</description>
+    <title>Posts | Academic</title>
+    <link>https://nicolas-suarez.github.io/blog/</link>
+      <atom:link href="https://nicolas-suarez.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <description>Posts</description>
     <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 18 Apr 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_3.png</url>
-      <title>Academic</title>
-      <link>https://nicolas-suarez.github.io/</link>
+      <title>Posts</title>
+      <link>https://nicolas-suarez.github.io/blog/</link>
     </image>
     
     <item>
@@ -47,30 +47,6 @@ export_tables, models(m1 m2) dec(2) cell(A1) using(&amp;quot;test.xlsx&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You could also use a wilcard in the models, and write something like &lt;code&gt;models(m*)&lt;/code&gt;.&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>Inequality in social capital in Chile: Assessing the importance of network size and contacts’ occupational prestige on status attainment</title>
-      <link>https://nicolas-suarez.github.io/research/social-networks/</link>
-      <pubDate>Fri, 01 Mar 2019 00:00:00 +0000</pubDate>
-      <guid>https://nicolas-suarez.github.io/research/social-networks/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>The impact of commuting time over educational achievement: A machine learning approach</title>
-      <link>https://nicolas-suarez.github.io/research/commuting-time/</link>
-      <pubDate>Thu, 01 Nov 2018 00:00:00 +0000</pubDate>
-      <guid>https://nicolas-suarez.github.io/research/commuting-time/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://nicolas-suarez.github.io/admin/config.yml</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://nicolas-suarez.github.io/admin/config.yml</guid>
-      <description></description>
     </item>
     
   </channel>
