@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>1 | Nicolás Suárez Chavarría</title>
-    <link>https://nicolas-suarez.github.io/publication-type/1/</link>
-      <atom:link href="https://nicolas-suarez.github.io/publication-type/1/index.xml" rel="self" type="application/rss+xml" />
-    <description>1</description>
+    <title>Source Themes | Nicolás Suárez Chavarría</title>
+    <link>https://nicolas-suarez.github.io/tag/source-themes/</link>
+      <atom:link href="https://nicolas-suarez.github.io/tag/source-themes/index.xml" rel="self" type="application/rss+xml" />
+    <description>Source Themes</description>
     <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Mon, 01 Jul 2013 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_512x512_fill_lanczos_center_3.png</url>
-      <title>1</title>
-      <link>https://nicolas-suarez.github.io/publication-type/1/</link>
+      <title>Source Themes</title>
+      <link>https://nicolas-suarez.github.io/tag/source-themes/</link>
     </image>
     
     <item>

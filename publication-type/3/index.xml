@@ -5,32 +5,12 @@
     <link>https://nicolas-suarez.github.io/publication-type/3/</link>
       <atom:link href="https://nicolas-suarez.github.io/publication-type/3/index.xml" rel="self" type="application/rss+xml" />
     <description>3</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 18 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 01 Nov 2018 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_512x512_fill_lanczos_center_3.png</url>
       <title>3</title>
       <link>https://nicolas-suarez.github.io/publication-type/3/</link>
     </image>
-    
-    <item>
-      <title>Predicting Ground-Level Ozone Concentration from Urban Satellite and Street-Level Imagery using Multimodal CNN</title>
-      <link>https://nicolas-suarez.github.io/research/urban-emissions/</link>
-      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
-      <guid>https://nicolas-suarez.github.io/research/urban-emissions/</guid>
-      <description>&lt;h1 id=&#34;using-satellite-and-street-level-images-to-predict-urban-emissions&#34;&gt;Using satellite and street level images to predict urban emissions&lt;/h1&gt;
-&lt;p&gt;&lt;strong&gt;Authors: Nina Prakash, Nicolas Suarez &amp;amp; Andrea Vallebueno&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;This was our class project for Stanford CS230 &amp;ldquo;Deep Learning&amp;rdquo; class during the Winter 2021 quarter. The project was featured as one of the &lt;a href=&#34;https://cs230.stanford.edu/past-projects/#winter-2021&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Outstanding projects for the Winter 2021 quarter&lt;/a&gt;. You can find our final report &lt;a href=&#34;http://cs230.stanford.edu/projects_winter_2021/reports/70701113.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
-&lt;p&gt;This project examines the relationship between the level of ozone concentration
-in urban locations and their physical features through the use of Convolutional
-Neural Networks (CNNs). We train two models, including one trained on satellite
-imagery (&amp;ldquo;Satellite CNN&amp;rdquo;) to capture higher-level features such as the location&amp;rsquo;s 
-geography, and the other trained on street-level imagery (&amp;ldquo;Street CNN&amp;rdquo;) to learn
-ground-level features such as motor vehicle activity. These features are then 
-concatenated to train neural network (&amp;ldquo;Concat NN&amp;rdquo;) on this shared representation
-and predict the location&amp;rsquo;s level of ozone as measured in parts per billion.&lt;/p&gt;
-</description>
-    </item>
     
     <item>
       <title>The impact of commuting time over educational achievement: A machine learning approach</title>
