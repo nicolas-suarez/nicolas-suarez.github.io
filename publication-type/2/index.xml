@@ -5,12 +5,31 @@
     <link>https://nicolas-suarez.github.io/publication-type/2/</link>
       <atom:link href="https://nicolas-suarez.github.io/publication-type/2/index.xml" rel="self" type="application/rss+xml" />
     <description>2</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 01 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 18 Mar 2021 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_512x512_fill_lanczos_center_3.png</url>
       <title>2</title>
       <link>https://nicolas-suarez.github.io/publication-type/2/</link>
     </image>
+    
+    <item>
+      <title>Predicting Ground Level Ozone Concentration from Urban Satellite and Street Level Imagery using Multimodal CNN</title>
+      <link>https://nicolas-suarez.github.io/research/urban-emissions/</link>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
+      <guid>https://nicolas-suarez.github.io/research/urban-emissions/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Create your slides in Markdown - click the &lt;em&gt;Slides&lt;/em&gt; button to check out the example.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Supplementary notes can be added here, including &lt;a href=&#34;https://wowchemy.com/docs/writing-markdown-latex/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;code, math, and images&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Inequality in social capital in Chile: Assessing the importance of network size and contacts’ occupational prestige on status attainment</title>
