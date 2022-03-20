@@ -269,7 +269,234 @@
       <link>https://nicolas-suarez.github.io/blog/landsat-8/</link>
       <pubDate>Mon, 24 May 2021 00:00:00 +0000</pubDate>
       <guid>https://nicolas-suarez.github.io/blog/landsat-8/</guid>
-      <description>&lt;p&gt;In this tutorial I want to explain how to download and visualize Landsat-8 images using GEE and Python packages. I wrote this code originally for my &lt;a href=&#34;https://github.com/nicolas-suarez/urban_emissions/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&amp;ldquo;Using satellite and street level images to predict urban emissions&amp;rdquo;&lt;/a&gt; project, and we struggled to download images in a simple way, and that&amp;rsquo;s why I&amp;rsquo;m writing this tutorial. You can find the actual Jupyter notebook with this example and the proper outputs in &lt;a href=&#34;https://github.com/nicolas-suarez/landsat_8_tutorial/blob/main/landsat_8_tutorial_download.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this link&lt;/a&gt;.&lt;/p&gt;
+      <description>&lt;p&gt;In this tutorial I want to explain how to download and visualize Landsat-8 images using GEE and Python packages. I wrote this code originally for my &lt;a href=&#34;https://github.com/nicolas-suarez/urban_emissions/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&amp;ldquo;Using satellite and street level images to predict urban emissions&amp;rdquo;&lt;/a&gt; project,  and I&amp;rsquo;m sharing it here because we struggled to download images in a simple and beginner friendly way. You can find the actual Jupyter notebook with this example and the proper outputs in &lt;a href=&#34;https://github.com/nicolas-suarez/landsat_8_tutorial/blob/main/landsat_8_tutorial_download.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this link&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;initial-set-up&#34;&gt;Initial set-up&lt;/h2&gt;
+&lt;p&gt;We start by importing some packages. Besides installing the packages, we also need a Google-Earth Engine account to use the &lt;code&gt;ee&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import os
+import numpy as np
+import pandas as pd
+import pickle
+import time
+import math
+import requests, zipfile, io
+from geetools import cloud_mask
+from IPython.display import Image
+
+#importing Earth Engine packages
+import ee #install in the console with &amp;quot;pip install earthengine-api --upgrade&amp;quot;
+ee.Authenticate()  #every person needs an Earth Engine account to do this part
+ee.Initialize()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;defining-satellite-images&#34;&gt;Defining satellite images&lt;/h2&gt;
+&lt;p&gt;Here we are going to define our satellite images. In this example, we are going to use the Landsat-8 Surfarce reflectance Tier 1 image collection, containing all the images taken during 2020, and using the 3 RGB  bands for this example.&lt;/p&gt;
+&lt;p&gt;Here we are also going to apply a mask to the pixels with the &lt;code&gt;cloud_mask&lt;/code&gt; function from the &lt;a href=&#34;https://pypi.org/project/geetools/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;geetools package&lt;/a&gt;. The mask allow us to exclude from our collection all the pixels that were covered by clouds, snow or similar sources of interference from an image. Since we are working for the moment with an image collection, we use the &lt;code&gt;map()&lt;/code&gt; function to individually apply the mask to all the elements in the collection.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;#defining image
+startDate = &#39;2020-01-01&#39;
+endDate = &#39;2020-12-31&#39;
+landsat = ee.ImageCollection(&amp;quot;LANDSAT/LC08/C01/T1_SR&amp;quot;)
+# filter date
+landsat = landsat.filterDate(startDate, endDate) 
+#applying cloud masking
+landsat_masked=landsat.map( cloud_mask.landsatSR([&#39;cloud&#39;]) )
+#selecting bands
+landsat_masked=landsat_masked.select([&amp;quot;B2&amp;quot;,&amp;quot;B3&amp;quot;,&amp;quot;B4&amp;quot;])
+landsat = landsat.select([&amp;quot;B2&amp;quot;,&amp;quot;B3&amp;quot;,&amp;quot;B4&amp;quot;])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;function-to-define-task-or-downloading-image-directly&#34;&gt;Function to define task or downloading image directly&lt;/h2&gt;
+&lt;p&gt;After doing this, I&amp;rsquo;m going to define a function to download imagery called &lt;code&gt;image_task&lt;/code&gt;. This function download satellite images centered around a point defined by latitude and longitude coordinates, with a certain size, and allows us to store them either on a Google Drive folder, Google Cloud bucket or locally.&lt;/p&gt;
+&lt;p&gt;We start by defining &lt;code&gt;len&lt;/code&gt;, the total size of the image in meters, that is computed as the product of the resolution of our Landsat-8 SR images (30 meters) and the number of pixels we want to capture in the image. After that, we generate a circle around the point of interested, using as the radius half of our &lt;code&gt;len&lt;/code&gt; parameter, and then we put a bounding box around the circle to get a square. We extract the coordinates of the bounding box and pass them to a &lt;code&gt;ee.Geometry.Rectangle&lt;/code&gt; object called &lt;code&gt;rectangle&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;After that, we only need to crop our &lt;code&gt;rectangle&lt;/code&gt; object from our satellite image, called &lt;code&gt;image&lt;/code&gt; here. Here, our image is going to be our previously defined &lt;code&gt;ee.ImageCollection&lt;/code&gt; object containing our &lt;code&gt;Landstat-8 SR&lt;/code&gt; satellite images. We are going to clip our &lt;code&gt;rectangle&lt;/code&gt; area using the &lt;code&gt;filterBounds()&lt;/code&gt; method, and then we use the &lt;code&gt;mean()&lt;/code&gt; function to obtain a mean-composite of the images in the &lt;code&gt;ImageCollection&lt;/code&gt; for the specified area. We also need to define the &lt;code&gt;region&lt;/code&gt; where we are working (which is essentially the same as our &lt;code&gt;rectangle&lt;/code&gt;), and the dimensions of our image (the number of pixels for the width and height).&lt;/p&gt;
+&lt;p&gt;Finally, the last step depends on how we want to download our images:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If we want to work locally with our files, then we are going to generate a download URL for our image in TIFF format, with the &lt;code&gt;ee.Image.getDownloadURL()&lt;/code&gt; method. We then use &lt;code&gt;requests&lt;/code&gt;, &lt;code&gt;zipfile&lt;/code&gt; and &lt;code&gt;io&lt;/code&gt; to download the image as a ZIP file, decompress it and store it a local folder.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If we want to work with cloud services, like Google Drive or Google Cloud, which is more reliable when we work with large volumes of images, then we are going to use &lt;code&gt;ee.batch.Export.image.toCloudStorage()&lt;/code&gt; or &lt;code&gt;ee.batch.Export.image.toDrive()&lt;/code&gt; to create a Google Earth engine &lt;code&gt;task&lt;/code&gt; with specifications of what kind of image we want, and then we use &lt;code&gt;task.start()&lt;/code&gt; to start the task, and the images are going to appear in the specified cloud folders. We can also check the status of the task to see if the images were downloaded succesfully or not.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def image_download(image,point,image_res,n_pixels,folder_name, image_name, storage=&amp;quot;local&amp;quot;):
+    
+    &amp;quot;&amp;quot;&amp;quot;
+    Function to download satellite images from a ee.imageCollection object.
+    We first generate a bounding box of image_res*n_pixels meters around &amp;quot;point&amp;quot;,
+    then we clip that region from the image collection, take the mean image from the collection,
+    and send that as a task to the Google Earth Engine. 
+    After that, we download the image Google Cloud Storage if storage==&amp;quot;Cloud&amp;quot;, 
+    to Google Drive if storage==&amp;quot;Drive&amp;quot; or to a local folder if storage==&amp;quot;local&amp;quot;.
+    
+    Inputs:
+    -image= ee.ImageCollection object
+    -point= ee.Geometry.Point object
+    -image_res= resolution of the image in meters
+    -n_pixels= number of pixels to extract on the images
+    -storage= string indicating if we are storing the images in Google Cloud,Google Drive or locally.
+              Defaults to local storage.
+    -folder_name= string with Google Cloud bucket name if storage==&amp;quot;Cloud&amp;quot;
+                  string with the name of a folder in the root of Google Drive if storage==&amp;quot;Drive&amp;quot;
+                  string with the path to the image if storage==&amp;quot;local&amp;quot;
+    -image_name= string with the image_name for the TIFF image.
+
+    Output:
+     When storage==&amp;quot;Cloud&amp;quot; or storage==&amp;quot;Drive&amp;quot;:
+     -task= an EE task object. we can then use task.status() to check the status of the task.
+     If the task is completed, we will see a TIFF image in &amp;quot;folder_name&amp;quot; with name &amp;quot;image_name.tif&amp;quot;.
+     The image has 3 dimensions, where the first 2 are n_pixels, and the 3rd is the number of bands of &amp;quot;image&amp;quot;.
+     When storage==&amp;quot;local&amp;quot;:
+     -there is no output, but we will see one TIFF file per band of our image in the folder &amp;quot;folder_name&amp;quot;.
+    &amp;quot;&amp;quot;&amp;quot;
+    #generating the box around the point
+    len=image_res*n_pixels # for landsat, 30 meters * 224 pixels
+    region= point.buffer(len/2).bounds().getInfo()[&#39;coordinates&#39;]
+    #defining the rectangle
+    coords=np.array(region)
+    #taking min and maxs of coordinates to define the rectangle
+    coords=[np.min(coords[:,:,0]), np.min(coords[:,:,1]), np.max(coords[:,:,0]), np.max(coords[:,:,1])]
+    rectangle=ee.Geometry.Rectangle(coords)
+
+    if storage==&amp;quot;Cloud&amp;quot;:
+        #generating the export task (dimensions is &amp;quot;WIDTHxHEIGHT&amp;quot;)
+        task=ee.batch.Export.image.toCloudStorage(image=image.filterBounds(rectangle).mean(), 
+                            bucket=folder_name, 
+                            description=image_name, 
+                            region=str(region), dimensions=str(n_pixels)+&amp;quot;x&amp;quot;+str(n_pixels))
+        #starting the task
+        task.start()
+        return task
+    
+    if storage==&amp;quot;Drive&amp;quot;:
+        #generating the export task (dimensions is &amp;quot;WIDTHxHEIGHT&amp;quot;)
+        task=ee.batch.Export.image.toDrive(image=image.filterBounds(rectangle).mean(), 
+                            folder=folder_name, 
+                            description=image_name, 
+                            region=str(region), dimensions=str(n_pixels)+&amp;quot;x&amp;quot;+str(n_pixels))
+        #starting the task
+        task.start()
+        return task
+    
+    if storage==&amp;quot;local&amp;quot;:
+        #downloading the image
+        r=requests.get( image.filterBounds(rectangle).mean().getDownloadURL({
+                            &#39;name&#39;: image_name, 
+                            &#39;region&#39;: str(region),
+                            &#39;dimensions&#39;: str(n_pixels)+&amp;quot;x&amp;quot;+str(n_pixels)}))
+        #unzip it to the selected directory
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(folder_name)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;testing-our-function&#34;&gt;Testing our function&lt;/h2&gt;
+&lt;p&gt;To test how our function works, we are going to create a little example, taking a 6.72 by 6.72 km satellite image around the Oval in Stanford campus, and storing it locally:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;#defining the oval as a point
+oval=ee.Geometry.Point(-122.169678,37.429154)
+
+#running our function
+image_download(image=landsat,point=oval,image_res=30,n_pixels=224,folder_name=&#39;LS8_images&#39;, image_name=&#39;test_image&#39;, storage=&amp;quot;local&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we are going to test that the images were indeed downloaded to the &lt;code&gt;LS8_images&lt;/code&gt; folder:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;os.listdir(&#39;LS8_images&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We indeed see that there are 3 files in our folder, one for each channel of the image.&lt;/p&gt;
+&lt;p&gt;We could further work with this images. For instance, we can use packages like imageio to read the images in Python, read them into a numpy array and then use numpy functions like stack to stack all individual images into one big array.&lt;/p&gt;
+&lt;h1 id=&#34;visualizing-images&#34;&gt;Visualizing images&lt;/h1&gt;
+&lt;p&gt;To visualize images, we are going to do very similar things to what we did before. I will generate the satellite images in almost the same way I did before, but now we are going to add some visualization parameters, &lt;code&gt;visParams&lt;/code&gt; to properly see our images.&lt;/p&gt;
+&lt;p&gt;We are going to obtain a &lt;code&gt;jpg&lt;/code&gt; image using the &lt;code&gt;ee.Image.getThumbUrl()&lt;/code&gt;function, and we are going to visualize directly here. The function programmed below allow us to decide if we want to see a cloud masked version of the image or the regular one.&lt;/p&gt;
+&lt;p&gt;The visualization parameters and the image size are defined here, but could be modified if we wanted.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;#defining parameters for the function
+image_res=30
+n_pixels=224
+
+#visualization parameters
+visParams={&#39;min&#39;: 0, &#39;max&#39;: 3000, &#39;gamma&#39;: 1.4,  
+           &#39;bands&#39; : [&#39;B4&#39;, &#39;B3&#39;, &#39;B2&#39;], &#39;dimensions&#39; : str(n_pixels)+&amp;quot;x&amp;quot;+str(n_pixels),
+           &#39;format&#39; : &#39;jpg&#39;}
+
+#defining the function
+def visualization(point,name,mask=True):
+    &#39;&#39;&#39;
+    Function to visualize the images for our ML application.
+    Inputs:
+        -point= ee.Geometry.point object
+        -name: name that is going to be given to the jpg file
+        -mask: True to get masked image, False to get unmasked image
+    Outputs:
+        The function doesn&#39;t produce an output, but generates a file called
+        &amp;quot;name.jpg&amp;quot; in the current directory
+    &#39;&#39;&#39;
+    #computing bounding box
+    len=image_res*n_pixels # for landsat, 30 meters * 224 pixels
+    region= point.buffer(len/2).bounds().getInfo()[&#39;coordinates&#39;]
+    coords=np.array(region)
+    coords=[np.min(coords[:,:,0]), np.min(coords[:,:,1]), np.max(coords[:,:,0]), np.max(coords[:,:,1])]
+    rectangle=ee.Geometry.Rectangle(coords)
+    
+    #clipping the area from satellite image
+    if mask==True:
+        clipped_image= landsat_masked.mean().clip(rectangle)
+    else:
+        clipped_image= landsat.mean().clip(rectangle)
+        
+    #getting the image
+    requests.get(clipped_image.getThumbUrl(visParams))
+    open(name+&#39;.jpg&#39;, &#39;wb&#39;).write(requests.get(clipped_image.getThumbUrl(visParams)).content)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we are going to test the code. First we will visualize our image around the Oval without cloud masking:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;visualization(point=oval,name=&#39;oval_no_mask&#39;,mask=False)
+Image(filename=&#39;oval_no_mask.jpg&#39;) 
+&lt;/code&gt;&lt;/pre&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /blog/landsat-8/oval_no_mask_hu925074f9182ffee7a618036463d8005d_25765_5888580dcdc71f8b2894e2d5b1a59c54.jpg 400w,
+               /blog/landsat-8/oval_no_mask_hu925074f9182ffee7a618036463d8005d_25765_d06e44af9b5eaa2d32149c1a2ffddf0d.jpg 760w,
+               /blog/landsat-8/oval_no_mask_hu925074f9182ffee7a618036463d8005d_25765_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/blog/landsat-8/oval_no_mask_hu925074f9182ffee7a618036463d8005d_25765_5888580dcdc71f8b2894e2d5b1a59c54.jpg&#34;
+               width=&#34;224&#34;
+               height=&#34;224&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt;And now we are going to visualize our image applying cloud masking:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;visualization(point=oval,name=&#39;oval_cloud_masking&#39;,mask=True)
+Image(filename=&#39;oval_cloud_masking.jpg&#39;) 
+&lt;/code&gt;&lt;/pre&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /blog/landsat-8/oval_cloud_masking_huef47ff7ed2b8cadf0a63b1ff93a97438_31059_3b79d85081fe32d71f43bd7be89ebbc0.jpg 400w,
+               /blog/landsat-8/oval_cloud_masking_huef47ff7ed2b8cadf0a63b1ff93a97438_31059_8a60a6f13e6d14e1db8b0de00a75b557.jpg 760w,
+               /blog/landsat-8/oval_cloud_masking_huef47ff7ed2b8cadf0a63b1ff93a97438_31059_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/blog/landsat-8/oval_cloud_masking_huef47ff7ed2b8cadf0a63b1ff93a97438_31059_3b79d85081fe32d71f43bd7be89ebbc0.jpg&#34;
+               width=&#34;224&#34;
+               height=&#34;224&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
 </description>
     </item>
     
