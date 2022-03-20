@@ -29,18 +29,62 @@ concatenated to train neural network (&amp;ldquo;Concat NN&amp;rdquo;) on this s
 and predict the location&amp;rsquo;s level of ozone as measured in parts per billion.&lt;/p&gt;
 &lt;h2 id=&#34;data&#34;&gt;Data&lt;/h2&gt;
 &lt;p&gt;We obtained ozone measurements (parts per billion) for 12,976 semi-unique locations with ozone levels information mostly located in North America from &lt;a href=&#34;https://www.airnow.gov/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;AirNow&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Our satellite imagery dataset was constructed using the Google Earth Engine API: for each location labeled with an ozone reading, we retrieve one satellite image centered at that location from the Landsat 8 Surface Reflectance Tier 1 Collection with a resolution of 224 $\times$ 224 pixels which represents $6.72$ km $\times$ $6.72$ km.  We use 7 bands from this collection: RGB, ultra blue, near infrared, and two shortwave infrared bands. We preprocess each of our images by adding a cloud mask per pixel and then computing the per pixel and band mean composite of all the available images for the year 2020.&lt;/p&gt;
-&lt;p&gt;The street-level imagery dataset was constructed using the Google Maps Street View API. For each location labeled with an ozone level, we randomly sample 10 geospatial points within $6.72$ km from the measurement point.&lt;/p&gt;
+&lt;p&gt;Our satellite imagery dataset was constructed using the Google Earth Engine API: for each location labeled with an ozone reading, we retrieve one satellite image centered at that location from the Landsat 8 Surface Reflectance Tier 1 Collection with a resolution of 224  by 224 pixels which represents 6.72 km  by 6.72 km.  We use 7 bands from this collection: RGB, ultra blue, near infrared, and two shortwave infrared bands. We preprocess each of our images by adding a cloud mask per pixel and then computing the per pixel and band mean composite of all the available images for the year 2020.&lt;/p&gt;
+&lt;p&gt;The street-level imagery dataset was constructed using the Google Maps Street View API. For each location labeled with an ozone level, we randomly sample 10 geospatial points within 6.72 km from the measurement point.&lt;/p&gt;
 &lt;p&gt;Here we can see some examples from our dataset:&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;table1.jpg&#34; /&gt;
-&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_4b1e4aca95726f2a02631b2ae83c38f1.jpg 400w,
+               /media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_5f62ffe314db713f03717d4b1fcb3af1.jpg 760w,
+               /media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_4b1e4aca95726f2a02631b2ae83c38f1.jpg&#34;
+               width=&#34;760&#34;
+               height=&#34;240&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
 &lt;h2 id=&#34;network-architecture&#34;&gt;Network architecture&lt;/h2&gt;
 &lt;p&gt;We train the two CNNs separately on the satellite and street-level imagery, both using a ResNet-18 architecture implemented in PyTorch and pretrained on the ImageNet dataset. The models are trained separately as the nature of the features they need to learn to associate with ozone concentration is quite different for each dataset. Transfer learning is used for both CNNs to leverage lower-level features learned on the ImageNet dataset. The ResNet-18 architecture was slightly adapted for our particular task; in the case of the satellite imagery, the CNN&amp;rsquo;s input layer was modified to accommodate for the image&amp;rsquo;s seven channels and was initialized using Kaiming initialization.&lt;/p&gt;
-&lt;p&gt;After training both CNNs separately to predict the ozone reading for each location, we extract $512$ features for each satellite and each street image. These are concatenated to create a feature vector of size $1,024$ representing the satellite image and a particular street view of a given location. We then train a Concatenated Feedforward Neural Network (NN) using these multiple representations of each location to predict the location&amp;rsquo;s average ozone level in 2020.&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;architecture4.PNG&#34; /&gt;
-&lt;/p&gt;
+&lt;p&gt;After training both CNNs separately to predict the ozone reading for each location, we extract 512 features for each satellite and each street image. These are concatenated to create a feature vector of size 1,024 representing the satellite image and a particular street view of a given location. We then train a Concatenated Feedforward Neural Network (NN) using these multiple representations of each location to predict the location&amp;rsquo;s average ozone level in 2020.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_dd4259d59b8b8566889798be3f420a90.PNG 400w,
+               /media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_4d173af12e1b73c91b367554e273a95f.PNG 760w,
+               /media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_1200x1200_fit_lanczos_3.PNG 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_dd4259d59b8b8566889798be3f420a90.PNG&#34;
+               width=&#34;760&#34;
+               height=&#34;330&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
 &lt;p&gt;More details about regularization, the tuning process of hyperparameters and training of the network can be found in the report.&lt;/p&gt;
 &lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
 &lt;p&gt;After tuning our hyperparameters and training our models, we obtain the following performance (Root Mean Square Error in our test set):&lt;/p&gt;
