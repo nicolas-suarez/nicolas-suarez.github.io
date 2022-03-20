@@ -5,12 +5,21 @@
     <link>https://nicolas-suarez.github.io/blog/</link>
       <atom:link href="https://nicolas-suarez.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <description>Blog Posts</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 18 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Mon, 24 May 2021 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://nicolas-suarez.github.io/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_512x512_fill_lanczos_center_3.png</url>
       <title>Blog Posts</title>
       <link>https://nicolas-suarez.github.io/blog/</link>
     </image>
+    
+    <item>
+      <title>Tutorial: Landsat-8 image download and visualization using Google Earth Engine and Python</title>
+      <link>https://nicolas-suarez.github.io/blog/landsat-8/</link>
+      <pubDate>Mon, 24 May 2021 00:00:00 +0000</pubDate>
+      <guid>https://nicolas-suarez.github.io/blog/landsat-8/</guid>
+      <description>&lt;p&gt;In this tutorial I want to explain how to download and visualize Landsat-8 images using GEE and Python packages. I wrote this code originally for my &lt;a href=&#34;https://github.com/nicolas-suarez/urban_emissions/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&amp;ldquo;Using satellite and street level images to predict urban emissions&amp;rdquo;&lt;/a&gt; project, and we struggled to download images in a simple way, and that&amp;rsquo;s why I&amp;rsquo;m writing this tutorial. You can find the actual Jupyter notebook with this example and the proper outputs in &lt;a href=&#34;https://github.com/nicolas-suarez/landsat_8_tutorial/blob/main/landsat_8_tutorial_download.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this link&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>A little Stata command to export tables to Excel</title>
