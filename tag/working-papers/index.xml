@@ -63,9 +63,31 @@ and predict the location&amp;rsquo;s level of ozone as measured in parts per bil
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can also visually compare our predictions for the test with ground truth values in the following figure:&lt;/p&gt;
-&lt;p align=&#34;center&#34;&gt;
-  &lt;img src=&#34;table4.jpg&#34; /&gt;
-&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_50b966737bd7f132fe17c211944a05a2.jpg 400w,
+               /media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_988aa65ea5f8b0a6a2a942f0f83b494e.jpg 760w,
+               /media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_50b966737bd7f132fe17c211944a05a2.jpg&#34;
+               width=&#34;760&#34;
+               height=&#34;312&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
 </description>
     </item>
     
