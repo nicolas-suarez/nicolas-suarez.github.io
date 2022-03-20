@@ -30,8 +30,6 @@
 &lt;h2 id=&#34;problems-with-the-current-data&#34;&gt;Problems with the current data&lt;/h2&gt;
 &lt;p&gt;In the current dataset downloaded from the authors website, there are some problems with how the distance to the border is calculated, and they are also missing a lot of pixels, since they discarded all uninhabited pixels. We can illustrate these problems by looking at the Bideyat tribe, located in the border shared among Egypt, Sudan, Chad and Libya. Most of the pixels are in Sudan and Chad, so the authors considered only those 2 countries for their analysis.&lt;/p&gt;
 &lt;p&gt;In following figure we are going to plot the distance to the border for the pixels in Chad (left) and Sudan (right), where blue pixels are the closest, and yellow are the farthest from the national border. Here we can observe that the distance to the border is clearly calculated in the wrong way: we have around 10 pixels at the top of Sudan, in the frontier with Egypt, that are marked to be less than 50 km to the border between Sudan and Chad, but they are around 200 kilometers away from the mentioned border. Their distance to the border was very likely computed around the wrong border.&lt;/p&gt;
-&lt;p&gt;
-
 
 
 
@@ -48,9 +46,15 @@
 
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://github.com/nicolas-suarez/opt_rdd_africa/blob/main/markdown_files/figure-gfm/unnamed-chunk-3-1.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /research/opt-rdd/unnamed-chunk-3-1_hu27329ac2600b8d62f3b328d8c757929f_6781_5555af68bc8a795f3dde07d8f7d12ce8.png 400w,
+               /research/opt-rdd/unnamed-chunk-3-1_hu27329ac2600b8d62f3b328d8c757929f_6781_df6b231c4638485f9b745bd86d663ccf.png 760w,
+               /research/opt-rdd/unnamed-chunk-3-1_hu27329ac2600b8d62f3b328d8c757929f_6781_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/research/opt-rdd/unnamed-chunk-3-1_hu27329ac2600b8d62f3b328d8c757929f_6781_5555af68bc8a795f3dde07d8f7d12ce8.png&#34;
+               width=&#34;672&#34;
+               height=&#34;480&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
-&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;As mentioned before, another problem present in this dataset is that there are a lot of missing pixels: in our previous figure we can see a lot of areas with very little pixels. If we check how many pixels we have per country in the Bideyat territory: there are 598 pixels in Sudan, but only 38 pixels in Chad, and we even have 45 pixels in Egypt, a country that should not be considered here given the approach of the authors.&lt;/p&gt;
 &lt;p&gt;The imbalance present here could be quite problematic, because we have relatively very little pixels in Chad compared to Sudan, and also because the pixels in Chad are not very close to the border, so a regression discontinuity analysis is not going to produce interesting results here.&lt;/p&gt;
 &lt;h2 id=&#34;replicating-and-fixing-the-dataset&#34;&gt;Replicating and fixing the dataset&lt;/h2&gt;
