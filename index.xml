@@ -21,6 +21,7 @@
 &lt;a href=&#34;https://rpubs.com/Nicolas_Gallo/549370&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Habiba Djebbari&amp;rsquo;s website&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Here I share my code, some examples about how to use it, and a comparison of my code and the original &lt;code&gt;R&lt;/code&gt; code used by the authors.&lt;/p&gt;
 &lt;p&gt;To wrote this, I took advantage of Stata&amp;rsquo;s new integration with Python and Jupyter Notebooks (more information on how to use this feature can be found &lt;a href=&#34;https://www.stata.com/new-in-stata/jupyter-notebooks/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;). I also used the &lt;a href=&#34;https://rpy2.github.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;rpy2 package&lt;/a&gt; to run &lt;code&gt;R&lt;/code&gt; commands inside a Jupyter notebook.&lt;/p&gt;
+&lt;p&gt;The original Jupyter Notebook I wrote for this can be found in my &lt;a href=&#34;https://github.com/nicolas-suarez/peer_iv&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Github repository&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&#34;setting-up-stata-in-python&#34;&gt;Setting up Stata in Python&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;#setting up Stata in Python
 import stata_setup
@@ -52,7 +53,7 @@ Running C:\Program Files\Stata17/profile.do ...
 &lt;h1 id=&#34;peer-iv-function&#34;&gt;Peer IV function&lt;/h1&gt;
 &lt;p&gt;To implement linear in means regressions, I wrote the &lt;code&gt;peer_iv&lt;/code&gt; function. This function takes as inputs, as any other regression function, a dependent variable and independent variables, plus an adjacency matrix &lt;code&gt;G&lt;/code&gt; to perform the calculations. This matrix has to be a &lt;code&gt;Mata&lt;/code&gt; matrix object (&lt;code&gt;Stata&lt;/code&gt; matrices have size limitations). The option &lt;code&gt;row&lt;/code&gt; allows us to row-normalize the adjacency matrix (so the sum of each row is 1, and we can interpret the product of a variable and the matrix as weighted means), and the &lt;code&gt;fixed&lt;/code&gt; option adds group level fixed effects.&lt;/p&gt;
 &lt;p&gt;The matrix generates an standard Stata regression output, containing coefficients, standard errors, p-values and all the relevant information, and it stores eclass results. This means that the output could be stored with custom commands like &lt;code&gt;outreg2&lt;/code&gt;, &lt;code&gt;estout&lt;/code&gt; or &lt;code&gt;esttab&lt;/code&gt; that allow the user to build customizable output tables.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;%%stata
+&lt;pre&gt;&lt;code class=&#34;language-stata&#34;&gt;%%stata
 
 capture program drop peer_iv
 program define peer_iv, eclass
@@ -188,7 +189,7 @@ end
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
 &lt;p&gt;Here we will run a little example to see how the command works, and how you can generate an adjacency matrix in Stata. We are going to use the &lt;code&gt;auto&lt;/code&gt; dataset with 1978 automobile data, and we are going to create a random adjacency matrix &lt;code&gt;G&lt;/code&gt; with elements that are drawn from a uniform between 0 an 1, but we will force the elements in the main diagonal to be 0. We are also going to row normalize the adjacency matrix.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;%%stata
+&lt;pre&gt;&lt;code class=&#34;language-stata&#34;&gt;%%stata
 
 sysuse auto, clear
 
