@@ -1,0 +1,1504 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Nicolás Suárez Chavarría" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="In this notebook I&#39;m going to share a Stata implementation of the Generalized 2SLS procedure to estimate peer effects described in [Bramoullé, Y., Djebbari, H., &amp; Fortin, B. (2009). Identification of peer effects through social networks. Journal of econometrics, 150(1), 41-55.](https://www.sciencedirect.com/science/article/pii/S0304407609000335)." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://nicolas-suarez.github.io/blog/peer_iv/" />
+
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#8C1515" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.0/css/academicons.min.css" integrity="sha512-W4yqoT1+8NLkinBLBZko+dFB2ZbHsYLDdr50VElllRcNt2Q4/GSs6u71UHKxB7S6JEMCp5Ve4xjh3eGQl/HRvg==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.d7d7f7e51974e7798ac21a4c361368d0.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://nicolas-suarez.github.io/blog/peer_iv/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+  <meta property="og:site_name" content="Nicolás Suárez Chavarría" />
+  <meta property="og:url" content="https://nicolas-suarez.github.io/blog/peer_iv/" />
+  <meta property="og:title" content="Generalized 2SLS implementation in Stata | Nicolás Suárez Chavarría" />
+  <meta property="og:description" content="In this notebook I&#39;m going to share a Stata implementation of the Generalized 2SLS procedure to estimate peer effects described in [Bramoullé, Y., Djebbari, H., &amp; Fortin, B. (2009). Identification of peer effects through social networks. Journal of econometrics, 150(1), 41-55.](https://www.sciencedirect.com/science/article/pii/S0304407609000335)." /><meta property="og:image" content="https://nicolas-suarez.github.io/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_512x512_fill_lanczos_center_3.png" />
+    <meta property="twitter:image" content="https://nicolas-suarez.github.io/media/icon_hu5c88e8a9398cf657f3e83a0d9ccab3ac_75464_512x512_fill_lanczos_center_3.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2022-03-25T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2022-05-25T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Generalized 2SLS implementation in Stata | Nicolás Suárez Chavarría</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="cef8309e54e10b284e5ca1fb11ce86e3" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.8988fb2a4bba758785868cfcb5244555.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Nicolás Suárez Chavarría</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Nicolás Suárez Chavarría</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/research/"><span>Research</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/blog/"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Generalized 2SLS implementation in Stata</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  <span >
+      Nicolás Suárez Chavarría</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    May 25, 2022
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>For one of my research projects I was working on peer effects for college students, and I wanted to use the Generalized 2SLS procedure to estimate peer effects described in <a href="https://www.sciencedirect.com/science/article/pii/S0304407609000335" target="_blank" rel="noopener">Bramoullé, Y., Djebbari, H., &amp; Fortin, B. (2009). Identification of peer effects through social networks. Journal of econometrics, 150(1), 41-55.</a>. The problem is that this project required a lot of data work and cleaning, so I worked on it on Stata mostly, but there is not a lot of support for peer effects regressions on <code>Stata</code>, so I had to adapt the code of Bramoullé et al. (2009) on my own. I based my code on their article, and on the code shared on 
+<a href="https://rpubs.com/Nicolas_Gallo/549370" target="_blank" rel="noopener">Habiba Djebbari&rsquo;s website</a>.</p>
+<p>Here I share my code, some examples about how to use it, and a comparison of my code and the original <code>R</code> code used by the authors.</p>
+<p>To wrote this, I took advantage of Stata&rsquo;s new integration with Python and Jupyter Notebooks (more information on how to use this feature can be found <a href="https://www.stata.com/new-in-stata/jupyter-notebooks/" target="_blank" rel="noopener">here</a>). I also used the <a href="https://rpy2.github.io/" target="_blank" rel="noopener">rpy2 package</a> to run <code>R</code> commands inside a Jupyter notebook.</p>
+<h2 id="setting-up-stata-in-python">Setting up Stata in Python</h2>
+<pre><code class="language-python">#setting up Stata in Python
+import stata_setup
+stata_setup.config(&quot;C:/Program Files/Stata17&quot;, &quot;mp&quot;)
+</code></pre>
+<pre><code>  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      17.0
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2021 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-STATA-PC        https://www.stata.com
+                                   979-696-4600        stata@stata.com
+
+Stata license: Unlimited-user 4-core network, expiring 21 Jul 2022
+Serial number: xxxxxxxxxxxx
+  Licensed to: Nicolas Suarez
+               Stanford University
+
+Notes:
+      1. Unicode is supported; see help unicode_advice.
+      2. More than 2 billion observations are allowed; see help obs_advice.
+      3. Maximum number of variables is set to 5,000; see help set_maxvar.
+
+Running C:\Program Files\Stata17/profile.do ...
+</code></pre>
+<h1 id="peer-iv-function">Peer IV function</h1>
+<p>To implement linear in means regressions, I wrote the <code>peer_iv</code> function. This function takes as inputs, as any other regression function, a dependent variable and independent variables, plus an adjacency matrix <code>G</code> to perform the calculations. This matrix has to be a <code>Mata</code> matrix object (<code>Stata</code> matrices have size limitations). The option <code>row</code> allows us to row-normalize the adjacency matrix (so the sum of each row is 1, and we can interpret the product of a variable and the matrix as weighted means), and the <code>fixed</code> option adds group level fixed effects.</p>
+<p>The matrix generates an standard Stata regression output, containing coefficients, standard errors, p-values and all the relevant information, and it stores eclass results. This means that the output could be stored with custom commands like <code>outreg2</code>, <code>estout</code> or <code>esttab</code> that allow the user to build customizable output tables.</p>
+<pre><code class="language-python">%%stata
+
+capture program drop peer_iv
+program define peer_iv, eclass
+version 17
+syntax varlist, ADJacency(name) [ROW FIXED OLS] 
+/* implements the generalized 2SLS model of Bramoulle et al (2009), without fixed effects.
+The model includes a constant, then the endogenous effect, effects of the independent variables, and then the exogenous effects.
+For more details see https://rpubs.com/Nicolas_Gallo/549370
+
+INPUTS:
+varlist = exogenous variables
+dep= dependent variable
+adjacency=name of the adjacency matrix in Mata
+row=optional, row normalizes the adjacency matrix
+fixed=optional, estimates model with cohort level fixed effects
+ols=optional, OLS results. Don't use together with FIXED
+
+OUTPUT:
+displays the coefficients and standard errors in a table. Stores eclass results.
+*/
+
+*separating dependent from independent variables
+gettoken dep varlist: varlist
+preserve
+quietly{
+*checking if there are missing values in our data
+reg `dep' `varlist'
+*recovering the indexes of non-missing observations
+gen muestra=e(sample)
+ereturn clear 
+
+*moving data as matrices
+mata X=st_data(.,&quot;`varlist'&quot;)
+mata y=st_data(.,&quot;`dep'&quot;)
+mata muestra=st_data(.,&quot;muestra&quot;)
+
+*dropping missing values from data matrices
+mata X=select(X,muestra)
+mata y=select(y,muestra)
+
+*dropping missing values from G matrix (eliminating the rows and columns with missing values, so the matrix are comformable)
+mata G1=select(`adjacency',muestra)
+mata G1=select(G1,muestra')
+
+*row normalizing G if needed
+if &quot;`row'&quot;!=&quot;&quot; mata G1=G1:/editvalue(rowsum(G1),0,1)
+
+*generating identity matrix
+mata Id=I(rows(G1))
+
+*OLS results
+if &quot;`ols'&quot;!=&quot;&quot; {
+    mata X_1 =  J(rows(X),1,1), G1*y, X, G1*X 
+    mata theta= invsym(quadcross(X_1, X_1))*quadcross(X_1, y)
+    mata e= y - X_1*theta
+    mata V = (quadsum(e:^2)/(rows(X_1)-cols(X_1)))*invsym(quadcross(X_1, X_1))
+}
+else {
+    *putting matrices together
+    *with fixed effects
+    if &quot;`fixed'&quot;!=&quot;&quot; {
+        mata S=( (Id-G1)*X, (Id-G1)*G1*X, (Id-G1)*G1*G1*X )
+        mata X_1= ( (Id-G1)*G1*y, (Id-G1)*X, (Id-G1)*G1*X )             
+    }
+    else{
+        mata S=( J(rows(X),1,1), X, G1*X, G1*G1*X )
+        mata X_1= ( J(rows(X),1,1), G1*y, X, G1*X )
+    }
+    mata P= S*invsym(quadcross(S,S))*S'
+
+    *first 2sls
+    if &quot;`fixed'&quot;!=&quot;&quot; mata theta_1= invsym(X_1'*P*X_1)*X_1'*P*(Id-G1)*y
+    else mata theta_1= invsym(X_1'*P*X_1)*X_1'*P*y
+    
+    *building instrument
+    if &quot;`fixed'&quot;!=&quot;&quot; {
+        mata Z = G1*luinv(Id-theta_1[1]*G1)*(Id-G1)*(X*theta_1[2::(1+cols(X))] +  G1*X*theta_1[(2+cols(X))::(1+2*cols(X))] ), (Id-G1)*X, (Id-G1)*G1*X   
+    }
+    else{
+        mata Z = J(rows(X),1,1), G1*luinv(Id-theta_1[2]*G1)*( theta_1[1]*J(rows(X),1,1) + X*theta_1[3::(2+cols(X))] +  G1*X*theta_1[(3+cols(X))::(2+2*cols(X))] ), X, G1*X
+    }
+    *
+    
+    *final 2sls
+    if &quot;`fixed'&quot;!=&quot;&quot; mata theta = luinv(quadcross(Z,X_1))*quadcross(Z,(Id-G1)*y)
+    else mata theta = luinv(quadcross(Z,X_1))*quadcross(Z,y)
+
+    *resids
+    if &quot;`fixed'&quot;!=&quot;&quot; {
+        mata e= (Id-G1)*y - luinv(Id-theta[1]*G1)*((Id-G1)*X*theta[2::(1+cols(X))] + (Id-G1)*G1*X*theta[(2+cols(X))::(1+2*cols(X))] )
+    }
+    else{
+        mata e= y - luinv(Id-theta[2]*G1)*( theta[1]*J(rows(X),1,1) + X*theta[3::(2+cols(X))] +  G1*X*theta[(3+cols(X))::(2+2*cols(X))] )
+    }
+
+
+    *variance
+    mata V = luinv(quadcross(Z,X_1))*(Z')*diag(e:^2)*Z*luinv(quadcross(X_1,Z))
+}
+
+*sending results to Stata
+mata st_matrix(&quot;b&quot;,theta')
+mata st_matrix(&quot;V&quot;,V)
+
+*row and col names for matrices
+local exog_peer //list for names of exogenous effects
+foreach var in `varlist'{
+    local exog_peer `exog_peer' `var'_p
+}
+if &quot;`fixed'&quot;!=&quot;&quot; {
+    local varnames `dep'_p `varlist' `exog_peer'
+}
+else{
+    local varnames _cons `dep'_p `varlist' `exog_peer'
+}
+
+
+*adding col and rownames
+matrix colnames b= `varnames'
+matrix colnames V = `varnames'
+matrix rownames V = `varnames'
+}
+*storing eclass results
+ereturn post b V, depname(`dep') esample(muestra)
+mata st_numscalar(&quot;e(N)&quot;, rows(G1))
+mata st_numscalar(&quot;e(df_r)&quot;, rows(X_1)-cols(X_1))
+eret local cmd peer_iv
+ereturn display
+
+restore     
+end
+
+</code></pre>
+<h2 id="example">Example</h2>
+<p>Here we will run a little example to see how the command works, and how you can generate an adjacency matrix in Stata. We are going to use the <code>auto</code> dataset with 1978 automobile data, and we are going to create a random adjacency matrix <code>G</code> with elements that are drawn from a uniform between 0 an 1, but we will force the elements in the main diagonal to be 0. We are also going to row normalize the adjacency matrix.</p>
+<pre><code class="language-python">%%stata
+
+sysuse auto, clear
+
+*generating the matrix
+mata G= runiform(`c(N)', `c(N)') 
+forval i=1/`c(N)'{
+    mata G[strtoreal(st_local(&quot;i&quot;)),strtoreal(st_local(&quot;i&quot;))]=0
+}
+
+*running the regression
+peer_iv price trunk turn, row adj(G)
+
+eret list
+</code></pre>
+<pre><code>. 
+. sysuse auto, clear
+(1978 automobile data)
+
+. 
+. *generating the matrix
+. mata G= runiform(`c(N)', `c(N)') 
+
+. forval i=1/`c(N)'{
+  2.         mata G[strtoreal(st_local(&quot;i&quot;)),strtoreal(st_local(&quot;i&quot;))]=0
+  3. }
+
+. 
+. *running the regression
+. peer_iv price trunk turn, row adj(G)
+------------------------------------------------------------------------------
+       price | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       _cons |   41706.23   48765.18     0.86   0.395    -55603.18    139015.6
+     price_p |  -1.527064   11.64602    -0.13   0.896    -24.76633     21.7122
+       trunk |   141.5504   83.60055     1.69   0.095    -25.27191    308.3727
+        turn |    98.8758   103.6205     0.95   0.343    -107.8956    305.6472
+     trunk_p |     439.69   968.8704     0.45   0.651    -1493.661    2373.041
+      turn_p |  -959.4334   2872.551    -0.33   0.739    -6691.519    4772.652
+------------------------------------------------------------------------------
+
+. 
+. eret list
+
+scalars:
+                  e(N) =  74
+               e(df_r) =  68
+
+macros:
+                e(cmd) : &quot;peer_iv&quot;
+         e(properties) : &quot;b V&quot;
+             e(depvar) : &quot;price&quot;
+
+matrices:
+                  e(b) :  1 x 6
+                  e(V) :  6 x 6
+
+. 
+</code></pre>
+<p>We can see the output of the regression, including a constant, the coefficient <code>price_p</code> is the coefficient of the endogenous effect, while <code>trunk_p</code> and <code>turn_p</code> are the exogenous effects.</p>
+<p>After the regression command we ran the <code>eret list</code> command, and we can see all the elements that are stored after running the command.</p>
+<h2 id="storing-mata-matrices">Storing Mata matrices</h2>
+<p>At least for my particular application, computing the adjacency matrix was very slow, so it is not something that I would do each time before I want to run peer effects regressions. To avoid this, we can use the <code>Mata</code> functions <code>matsave</code> and <code>matuse</code> to store a matrix as a <code>.mmat</code> object, and then load it into Stata.</p>
+<h1 id="checking-if-the-code-works">Checking if the code works</h1>
+<p>Here, to see if my code works properly, I will run the <code>R</code> code provided by Bramoullé, Djebbari and Fortin (it can be found <a href="https://rpubs.com/Nicolas_Gallo/549370" target="_blank" rel="noopener">here</a>) to generate data, then estimate peer effects with and without fixed effects, export their data to Stata, and then see if my function obtains the same coefficients.</p>
+<p>The code provided by the authors is meant to be used to run Monte Carlo simulations, so I made some modifications to keep only the relevant parts. Also, for both cases, the authors defined different data generating processes, so we will have 2 vectors of dependent variables, but all of them are generated with the vector of white noise.</p>
+<pre><code class="language-python">#Python package to use magic R commands
+%load_ext rpy2.ipython
+</code></pre>
+<h2 id="generating-network-data-in-r">Generating network data in R</h2>
+<pre><code class="language-r">%%R
+
+library(knitr)
+library(igraph)
+library(truncnorm)
+set.seed(1)
+
+alpha=0.7683
+beta=0.4666
+gamma=0.0834
+delta=0.1507
+e_var=0.1
+#Generating a graph with 100 vertices and a probability of link of 0.04 with the &quot;random.renyi.game()&quot; function
+g&lt;-erdos.renyi.game(100,0.04)
+#Generating the associated weighted adjacency matrix
+G&lt;-get.adjacency(g)
+G&lt;-as.matrix(G)
+
+#Drawing a vector x of characteristics
+x_sim&lt;-matrix(rbinom(n = nrow(G),size = 1,prob = 0.9458 ),nrow(G),1)
+for(i in 1:nrow(x_sim)){
+  if(x_sim[i,] != 0){
+    x_sim[i,]&lt;-rtruncnorm(n = 1,a = 0,b = 1000,mean = 1,sd = 3) 
+  }
+}
+#a vector filled with 1,  size m x 1 (used when there is an intercept in the model, i.e. when fixed_effects = FALSE)
+l&lt;-matrix(1,nrow(G),1)
+
+GX&lt;-G %*% x_sim
+G2X&lt;-(G %*% G) %*% x_sim
+#an identity matrix of appropriate size
+I&lt;-(diag(nrow(G))) 
+# Inv corresponds to (I - Beta*G))^(-1)   in the reduced form(check equation (5))
+# Solve function gives the inverse of a matrix
+Inv&lt;-solve(I - beta * G)
+</code></pre>
+<h2 id="case-without-fixed-effects">Case without fixed effects</h2>
+<pre><code class="language-r">%%R
+
+#the instrument vector of size m x 4
+S&lt;-matrix(c(l,x_sim,GX,G2X),nrow(x_sim),)
+
+#P is the weighting matrix of size m x n
+P&lt;-S %*% solve(t(S) %*% S) %*% t(S)
+
+
+eps&lt;-matrix(rnorm(n = nrow(G),mean = 0,sd = e_var),nrow(G),1)
+y&lt;-alpha * Inv %*% l  + Inv %*% (gamma * I + delta * G) %*% x_sim  + Inv %*% eps
+Gy&lt;-G %*% y
+
+#X tilde, size n x 4
+X_t&lt;-matrix(c(l,Gy,x_sim,GX),nrow(x_sim),)
+
+#theta 2sls and extracting its parameters
+th_2sls &lt;-solve(t(X_t) %*% P %*% X_t) %*% t(X_t) %*% P %*% y
+alpha_2sls&lt;-th_2sls[1]
+beta_2sls&lt;-th_2sls[2]
+gamma_2sls&lt;-th_2sls[3]
+delta_2sls&lt;-th_2sls[4]
+
+#Recalculate I with Beta_2sls
+I_2sls&lt;-solve((diag(nrow(G)) - beta_2sls * G ))  
+
+#Gy estimated in theta 2sls
+gy_2sls&lt;- G %*% I_2sls %*% (alpha_2sls * l   + gamma_2sls * x_sim + GX * delta_2sls)
+
+Z_th&lt;-matrix(c(rep(1,nrow(G)),gy_2sls,x_sim,GX),nrow(x_sim),)
+
+#THETAS
+#theta lee
+th_lee_1&lt;-solve(t(Z_th) %*% X_t) %*% t(Z_th) %*% y
+</code></pre>
+<h2 id="case-with-fixed-effects">Case with fixed effects</h2>
+<pre><code class="language-r">%%R
+IG &lt;-(I - G)
+#the instrument vector of size m x 3
+S&lt;-matrix(c(IG%*%x_sim,IG%*%GX,IG%*%G2X),nrow(G),)
+
+#P is the weighting matrix of size m x m
+P&lt;-S %*% solve(t(S) %*% S) %*% t(S)
+
+y2&lt;- solve(IG) %*% Inv %*% (gamma*I + delta * G) %*% IG %*% x_sim + solve(IG) %*% Inv %*% IG %*% eps
+
+#X tilde, size m x 3
+X_t&lt;-matrix(c(G%*%IG%*%y2 ,IG%*%x_sim,IG%*%GX),nrow(x_sim),)
+
+
+#theta 2sls and extracting its parameters
+th_2sls &lt;-solve(t(X_t) %*% P %*% X_t) %*% t(X_t) %*% P %*% IG%*%y2
+beta_2sls&lt;-th_2sls[1]
+gamma_2sls&lt;-th_2sls[2]
+delta_2sls&lt;-th_2sls[3]
+
+#Recalculate I with Beta_2sls
+Inv_2sls&lt;-solve(I - beta_2sls * G )
+#IGy estimated in theta 2sls
+IGy_2sls&lt;-Inv_2sls %*% (gamma_2sls * I + delta_2sls * G) %*% IG %*% x_sim + Inv_2sls %*% IG %*% eps 
+
+IG_Gy_2sls&lt;- G %*% Inv_2sls %*% (IG %*% (x_sim * gamma_2sls + GX* delta_2sls))
+
+Z_th&lt;-matrix(c(IG_Gy_2sls,IG%*%x_sim,IG%*%GX),nrow(G),)
+
+
+#THETAS
+#theta lee
+th_lee_2&lt;-solve(t(Z_th) %*% X_t) %*% t(Z_th) %*% IG%*%y2
+</code></pre>
+<h2 id="storing-data-in-r-as-csv-and-reading-it-in-stata">Storing data in R as CSV, and reading it in Stata</h2>
+<pre><code class="language-r">%%R
+#storing data and adjacency matrix as CSV, to be readed in Stata later
+write.csv(data.frame(x_sim,y,y2),'data.csv',row.names = FALSE)
+write.csv(G,'adjacency.csv',row.names = FALSE)
+</code></pre>
+<pre><code class="language-python">%%stata
+*reading adjacency matrix, and passing it to Mata
+import delimited &quot;adjacency.csv&quot;, clear
+putmata  G_r=(v*), replace
+
+*reading data
+import delimited &quot;data.csv&quot;, varnames(1) clear
+</code></pre>
+<pre><code>. *reading adjacency matrix, and passing it to Mata
+. import delimited &quot;adjacency.csv&quot;, clear
+(encoding automatically selected: ISO-8859-2)
+(100 vars, 100 obs)
+
+. putmata  G_r=(v*), replace
+(1 matrix posted)
+
+. 
+. *reading data
+. import delimited &quot;data.csv&quot;, varnames(1) clear
+(encoding automatically selected: ISO-8859-1)
+(3 vars, 100 obs)
+
+. 
+</code></pre>
+<h2 id="comparing-results-without-fixed-effects">Comparing results without fixed effects</h2>
+<pre><code class="language-python">%%stata
+peer_iv y x_sim, adj(G_r)
+</code></pre>
+<pre><code>-----------------------------------------------------------------------------
+&gt; -
+           y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       _cons |   .7693815   .0861937     8.93   0.000     .5982885    .9404746
+         y_p |   .4668116   .0019521   239.13   0.000     .4629367    .4706865
+       x_sim |   .0832526   .0174479     4.77   0.000     .0486188    .1178864
+     x_sim_p |   .1501907   .0057371    26.18   0.000     .1388026    .1615789
+------------------------------------------------------------------------------
+</code></pre>
+<pre><code class="language-r">%%R
+th_lee_1
+</code></pre>
+<pre><code>          [,1]
+[1,] 0.7693815
+[2,] 0.4668116
+[3,] 0.0832526
+[4,] 0.1501907
+</code></pre>
+<h2 id="comparing-results-with-fixed-effects">Comparing results with fixed effects</h2>
+<pre><code class="language-python">%%stata
+peer_iv y2 x_sim, fixed adj(G_r)
+</code></pre>
+<pre><code>------------------------------------------------------------------------------
+          y2 | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        y2_p |   .4663327   .0025075   185.97   0.000      .461356    .4713095
+       x_sim |   .0841561   .0081916    10.27   0.000      .067898    .1004143
+     x_sim_p |   .1500943   .0018714    80.20   0.000       .14638    .1538086
+------------------------------------------------------------------------------
+</code></pre>
+<pre><code class="language-r">%%R
+th_lee_2
+</code></pre>
+<pre><code>           [,1]
+[1,] 0.46633273
+[2,] 0.08415615
+[3,] 0.15009431
+</code></pre>
+<p>As we can see, in both cases, the <code>peer_iv</code> command produces the same estimates as the original package. Furthermore, both packages produce estimates that are very similar to the ones used to generate our data (for instance, we have that $\beta=0.4666$, and in both cases we get coefficients very close to that).</p>
+
+    </div>
+
+    
+
+
+
+
+
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://nicolas-suarez.github.io/blog/peer_iv/&amp;text=Generalized%202SLS%20implementation%20in%20Stata" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://nicolas-suarez.github.io/blog/peer_iv/&amp;t=Generalized%202SLS%20implementation%20in%20Stata" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Generalized%202SLS%20implementation%20in%20Stata&amp;body=https://nicolas-suarez.github.io/blog/peer_iv/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://nicolas-suarez.github.io/blog/peer_iv/&amp;title=Generalized%202SLS%20implementation%20in%20Stata" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Generalized%202SLS%20implementation%20in%20Stata%20https://nicolas-suarez.github.io/blog/peer_iv/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://nicolas-suarez.github.io/blog/peer_iv/&amp;title=Generalized%202SLS%20implementation%20in%20Stata" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://nicolas-suarez.github.io/"><img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hu27f7dc34c9db8fd2b063f3fba6be9864_340031_270x270_fill_q75_lanczos_center.jpg" alt="Nicolás Suárez Chavarría"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://nicolas-suarez.github.io/">Nicolás Suárez Chavarría</a></h5>
+      <h6 class="card-subtitle">Ph.D. Candidate</h6>
+      <p class="card-text">My research interests include Development and Public Economics, Data Science and Machine Learning applications for Causal Inference.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:nsuarez@stanford.edu" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/nicolas-suarez" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://orcid.org/0000-0002-1359-9783" target="_blank" rel="noopener">
+        <i class="ai ai-ordcid"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://publons.com/researcher/1770315/nicolas-suarez-chavarria/" target="_blank" rel="noopener">
+        <i class="ai ai-publons"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/files/cv.pdf" >
+        <i class="ai ai-cv"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+  
+
+
+
+
+
+
+
+  
+  
+  
+
+  
+  
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+      <script id="dsq-count-scr" src="https://nicolas-suarez.disqus.com/count.js" async></script>
+    
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.d68ecd57c0ec1f1f61d65fd568f1c3a0.js"></script>
+
+    
+
+
+
+
+
+
+</body>
+</html>
