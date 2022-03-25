@@ -698,7 +698,7 @@ Running C:\Program Files\Stata17/profile.do ...
 <h1 id="peer-iv-function">Peer IV function</h1>
 <p>To implement linear in means regressions, I wrote the <code>peer_iv</code> function. This function takes as inputs, as any other regression function, a dependent variable and independent variables, plus an adjacency matrix <code>G</code> to perform the calculations. This matrix has to be a <code>Mata</code> matrix object (<code>Stata</code> matrices have size limitations). The option <code>row</code> allows us to row-normalize the adjacency matrix (so the sum of each row is 1, and we can interpret the product of a variable and the matrix as weighted means), and the <code>fixed</code> option adds group level fixed effects.</p>
 <p>The matrix generates an standard Stata regression output, containing coefficients, standard errors, p-values and all the relevant information, and it stores eclass results. This means that the output could be stored with custom commands like <code>outreg2</code>, <code>estout</code> or <code>esttab</code> that allow the user to build customizable output tables.</p>
-<pre><code class="language-stata">%%stata
+<pre><code class="language-python">%%stata
 
 capture program drop peer_iv
 program define peer_iv, eclass
@@ -834,7 +834,7 @@ end
 </code></pre>
 <h2 id="example">Example</h2>
 <p>Here we will run a little example to see how the command works, and how you can generate an adjacency matrix in Stata. We are going to use the <code>auto</code> dataset with 1978 automobile data, and we are going to create a random adjacency matrix <code>G</code> with elements that are drawn from a uniform between 0 an 1, but we will force the elements in the main diagonal to be 0. We are also going to row normalize the adjacency matrix.</p>
-<pre><code class="language-stata">%%stata
+<pre><code class="language-python">%%stata
 
 sysuse auto, clear
 
