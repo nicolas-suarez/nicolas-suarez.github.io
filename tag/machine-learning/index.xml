@@ -17,23 +17,24 @@
       <link>https://nicolas-suarez.github.io/research/asset-ownership/</link>
       <pubDate>Wed, 14 Dec 2022 00:00:00 +0000</pubDate>
       <guid>https://nicolas-suarez.github.io/research/asset-ownership/</guid>
-      <description>&lt;p&gt;This was our class project for Stanford CS229 &amp;ldquo;Machine Learning&amp;rdquo; class during the Fall 2022 quarter. The project was featured You can find our poster submission &lt;a href=&#34;https://nicolas-suarez.github.io/files/asset_poster.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+      <description>&lt;p&gt;This was our class project for Stanford CS229 &amp;ldquo;Machine Learning&amp;rdquo; class during the Fall 2022 quarter. You can find our poster submission &lt;a href=&#34;https://nicolas-suarez.github.io/files/asset_poster.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;We predict asset ownership in Africa making use of Landsat-8 satellite imagery and ground truth data from the Demographic and Health Surveys (DHS). We trained a ResNet-18 model} (He et al., 2016), a sub-class of a Convolutional Neural Network (CNN), and used it to predict asset ownership levels over 6.72 km by 6.72 km patches of land in Africa. We used transfer learning to train our model to perform a regression task, initializing our model with weights originally used to classify images. The performance of our best model is much better than the performance of our baseline models, but our model might be overfitting, and the predictions it generates are far off from our ground truth data. We obtained lower $R^2$ validation set values than Yeh et al. (2020), a paper that attempts our same task.&lt;/p&gt;
 &lt;h2 id=&#34;data&#34;&gt;Data&lt;/h2&gt;
-&lt;h1 id=&#34;ground-truth-demographic-and-health-surveys-dhs-surveys&#34;&gt;Ground truth: Demographic and Health Surveys (DHS) surveys&lt;/h1&gt;
+&lt;h2 id=&#34;ground-truth-demographic-and-health-surveys-dhs-surveys&#34;&gt;Ground truth: Demographic and Health Surveys (DHS) surveys&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;We combined all the household DHS surveys for African countries that have been published since 2014 that have a matching file with the geocoordinates of each cluster.&lt;/li&gt;
 &lt;li&gt;Our variable of interest is the score in the wealth index obtained by each household. This score is produced using Principal Component Analysis over  survey questions, including but not limited to access to drinkable water, sewerage, electricity, and ownership of farming and non-farming assets.&lt;/li&gt;
 &lt;li&gt;We geocoded 12,511 locations across 24 countries, combining data from 26 DHS surveys between 2014 and 2021.&lt;/li&gt;
 &lt;li&gt;In Panel (a) of Figure 1 we show the spatial distribution of our ground truth data.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id=&#34;satellite-images-landsat-8-surface-reflectance-collection&#34;&gt;Satellite images: Landsat-8 Surface Reflectance collection&lt;/h1&gt;
+&lt;h2 id=&#34;satellite-images-landsat-8-surface-reflectance-collection&#34;&gt;Satellite images: Landsat-8 Surface Reflectance collection&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;We retrieved imagery using the Google Earth Engine API. For each DHS cluster with a geocoded location, we defined a patch of 6.72 km by 6.72 km centered in our location, and we retrieved an image for the patch using the Landsat 8 Surface Reflectance Tier 1 Collection.&lt;/li&gt;
 &lt;li&gt;We used 3 bands from this collection: Red, Green and Blue surface reflectance. We preprocessed each of our images by adding a cloud mask per pixel and then computing the per pixel and band mean composite of all the available images for the year when the DHS cluster was surveyed.&lt;/li&gt;
 &lt;li&gt;We retrieved images for 12,426 locations across all Africa. In Figure Panels (b) and (c) of Figure 1 we show some examples of the cloud masked imagery we produced.&lt;/li&gt;
-&lt;li&gt;We used an 80%, 10%, 10% training, validation and test data split. In the following table we show the sample sizes of our 3 sets:
+&lt;li&gt;We used an 80%, 10%, 10% training, validation and test data split. In the following table we show the sample sizes of our 3 sets:&lt;/li&gt;
+&lt;/ul&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -52,8 +53,6 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
 
 
 
@@ -79,10 +78,11 @@
                height=&#34;638&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
-&lt;p&gt;We obtained ozone measurements (parts per billion) for 12,976 semi-unique locations with ozone levels information mostly located in North America from &lt;a href=&#34;https://www.airnow.gov/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;AirNow&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Our satellite imagery dataset was constructed using the Google Earth Engine API: for each location labeled with an ozone reading, we retrieve one satellite image centered at that location from the Landsat 8 Surface Reflectance Tier 1 Collection with a resolution of 224 $\times$ 224 pixels which represents 6.72 km $\times$ 6.72 km.  We use 7 bands from this collection: RGB, ultra blue, near infrared, and two shortwave infrared bands. We preprocess each of our images by adding a cloud mask per pixel and then computing the per pixel and band mean composite of all the available images for the year 2020.&lt;/p&gt;
-&lt;p&gt;The street-level imagery dataset was constructed using the Google Maps Street View API. For each location labeled with an ozone level, we randomly sample 10 geospatial points within 6.72 km from the measurement point.&lt;/p&gt;
-&lt;p&gt;Here we can see some examples from our dataset:&lt;/p&gt;
+&lt;h2 id=&#34;models&#34;&gt;Models&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;We trained a Residual Network, a particular kind of a Convolutional Neural Network (CNN). We use transfer learning to initialize our model, and we adapt its architecture so we can use it for a regression task.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Residual Network (ResNet)}&lt;/strong&gt;: Type of CNN with a special architecture defined by  He et al. (2016). These kind of models are build by stacking &lt;strong&gt;Residual Blocks&lt;/strong&gt;, blocks of convolutional layers connected with activation functions, where the input of the block is then added to the output of the stacked convolutional layers at the end (see example in Figure 2). Residual blocks should help a deep CNN to avoid the performance problems associated with very deep networks, so if some of the final layers are not helping the model performance, their weights will be set to 0 and the block will become an identity mapping.&lt;/li&gt;
+&lt;/ul&gt;
 
 
 
@@ -100,17 +100,17 @@
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
     &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
-               /media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_4b1e4aca95726f2a02631b2ae83c38f1.jpg 400w,
-               /media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_5f62ffe314db713f03717d4b1fcb3af1.jpg 760w,
-               /media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
-               src=&#34;https://nicolas-suarez.github.io/media/table1_huf86a670c5ac72a7964fb834b7736087e_57419_4b1e4aca95726f2a02631b2ae83c38f1.jpg&#34;
-               width=&#34;760&#34;
-               height=&#34;240&#34;
+               /media/asset_2_hu36c954061ed853e24213281a960c0d16_36256_a773d17cc55538e60744a26494f47646.jpg 400w,
+               /media/asset_2_hu36c954061ed853e24213281a960c0d16_36256_3a2048aca87d1a2518d6449be91f42a0.jpg 760w,
+               /media/asset_2_hu36c954061ed853e24213281a960c0d16_36256_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/asset_2_hu36c954061ed853e24213281a960c0d16_36256_a773d17cc55538e60744a26494f47646.jpg&#34;
+               width=&#34;698&#34;
+               height=&#34;382&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
-&lt;h2 id=&#34;network-architecture&#34;&gt;Network architecture&lt;/h2&gt;
-&lt;p&gt;We train the two CNNs separately on the satellite and street-level imagery, both using a ResNet-18 architecture implemented in PyTorch and pretrained on the ImageNet dataset. The models are trained separately as the nature of the features they need to learn to associate with ozone concentration is quite different for each dataset. Transfer learning is used for both CNNs to leverage lower-level features learned on the ImageNet dataset. The ResNet-18 architecture was slightly adapted for our particular task; in the case of the satellite imagery, the CNN&amp;rsquo;s input layer was modified to accommodate for the image&amp;rsquo;s seven channels and was initialized using Kaiming initialization.&lt;/p&gt;
-&lt;p&gt;After training both CNNs separately to predict the ozone reading for each location, we extract 512 features for each satellite and each street image. These are concatenated to create a feature vector of size 1,024 representing the satellite image and a particular street view of a given location. We then train a Concatenated Feedforward Neural Network (NN) using these multiple representations of each location to predict the location&amp;rsquo;s average ozone level in 2020.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Our implementation&lt;/strong&gt;: We trained a ResNet-18 model, a Residual Network that contains 18 convolutional layers grouped in 8 residual blocks connected by ReLU activation functions. The last layer of the original model is a linear layer connected to a softmax layer that classifies images into 1,000 classes, so we modify the last linear layer so now it outputs only one number that will represent our predicted asset ownership, and we measure our loss as our root mean squared error (RMSE). We initialize our model using the original ResNet-18 pretrained weights. In Figure 3 we show our model&amp;rsquo;s architecture:&lt;/li&gt;
+&lt;/ul&gt;
 
 
 
@@ -128,36 +128,51 @@
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
     &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
-               /media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_dd4259d59b8b8566889798be3f420a90.PNG 400w,
-               /media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_4d173af12e1b73c91b367554e273a95f.PNG 760w,
-               /media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_1200x1200_fit_lanczos_3.PNG 1200w&#34;
-               src=&#34;https://nicolas-suarez.github.io/media/architecture4_hu33a4bc16cd2fddcf91d99bb7d2037609_163418_dd4259d59b8b8566889798be3f420a90.PNG&#34;
+               /media/asset_3_hu8dee5766a402a1e0bac9cd4686f0c167_109232_abc449433de29b70a77d0c9af0bf8f36.jpg 400w,
+               /media/asset_3_hu8dee5766a402a1e0bac9cd4686f0c167_109232_2aaf7136309fcee34bced077019c3059.jpg 760w,
+               /media/asset_3_hu8dee5766a402a1e0bac9cd4686f0c167_109232_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/asset_3_hu8dee5766a402a1e0bac9cd4686f0c167_109232_abc449433de29b70a77d0c9af0bf8f36.jpg&#34;
                width=&#34;760&#34;
-               height=&#34;330&#34;
+               height=&#34;327&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
-&lt;p&gt;More details about regularization, the tuning process of hyperparameters and training of the network can be found in the report.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Benchmark models&lt;/strong&gt;: We trained linear regression, Lasso regression and Ridge regression models to compare the performance of our model against them.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;experiments&#34;&gt;Experiments&lt;/h2&gt;
+&lt;p&gt;To tune the hyperparameters of our models, we experimented using data augmentation techniques and modifying several components of our model.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Data augmentation techniques&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Applying independent vertical and horizontal flips to our images with certain probabilities.&lt;/li&gt;
+&lt;li&gt;Rotating our images in degrees multiples of 90 (0, 90, 180 and 270) with certain probabilities.&lt;/li&gt;
+&lt;li&gt;Applying different degrees of Gaussian Blurring to our images.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hyperparameters tuned:&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Number of epochs for training.&lt;/li&gt;
+&lt;li&gt;Mini-batch training size.&lt;/li&gt;
+&lt;li&gt;Number of frozen convolutional layers at the bottom of the model (last layers of the model).&lt;/li&gt;
+&lt;li&gt;Optimizer (Stochastic Gradient Descent or Adam).&lt;/li&gt;
+&lt;li&gt;Learning rate.&lt;/li&gt;
+&lt;li&gt;For Stochastic Gradient Descent, we tuned the momentum parameter (momentum makes our gradient a moving average of our previous gradients).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
-&lt;p&gt;After tuning our hyperparameters and training our models, we obtain the following performance (Root Mean Square Error in our test set):&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Satellite Model&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Street-level Model&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Concatenated Model&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;Test RMSE (ppb)&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;12.48&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;20.64&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;11.70&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;We can also visually compare our predictions for the test with ground truth values in the following figure:&lt;/p&gt;
+&lt;p&gt;We computed the RMSE and $R^2$ coefficient in our &lt;strong&gt;training&lt;/strong&gt;, &lt;strong&gt;validation&lt;/strong&gt; and &lt;strong&gt;test&lt;/strong&gt; sets for our CNN and benchmark models.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linear regression and Ridge regression have good performance on the training set but a very poor performance on the validation and test sets.&lt;/li&gt;
+&lt;li&gt;LASSO regression performs equally bad on the training, validation and test sets.
+Our best model is a &lt;strong&gt;ResNet-18&lt;/strong&gt; model trained with:&lt;/li&gt;
+&lt;li&gt;200 epochs&lt;/li&gt;
+&lt;li&gt;Training batch size of 500 images&lt;/li&gt;
+&lt;li&gt;4 data augmentation transformations applied to images&lt;/li&gt;
+&lt;li&gt;Adam optimizer&lt;/li&gt;
+&lt;li&gt;Learning rate = 0.001
+The best model has an excellent performance on the training set, and a good performance on the validation and test sets, suggesting overfitting despite using regularization techniques.&lt;/li&gt;
+&lt;/ul&gt;
 
 
 
@@ -175,14 +190,47 @@
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
     &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
-               /media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_50b966737bd7f132fe17c211944a05a2.jpg 400w,
-               /media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_988aa65ea5f8b0a6a2a942f0f83b494e.jpg 760w,
-               /media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
-               src=&#34;https://nicolas-suarez.github.io/media/table4_huc85fa806f0b72bdf75cb9f06cc6195a7_51089_50b966737bd7f132fe17c211944a05a2.jpg&#34;
-               width=&#34;760&#34;
-               height=&#34;312&#34;
+               /media/asset_5_huad5386ebdd1640fc1aae4011f8eb8382_74957_88e951855976fb9beb1ce6a454213d63.jpg 400w,
+               /media/asset_5_huad5386ebdd1640fc1aae4011f8eb8382_74957_28dbbe53c213fc71dd2146614c889324.jpg 760w,
+               /media/asset_5_huad5386ebdd1640fc1aae4011f8eb8382_74957_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/asset_5_huad5386ebdd1640fc1aae4011f8eb8382_74957_88e951855976fb9beb1ce6a454213d63.jpg&#34;
+               width=&#34;662&#34;
+               height=&#34;340&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
+&lt;h3 id=&#34;country-average-asset-ownership-for-pixels-in-our-test-set&#34;&gt;Country average asset ownership for pixels in our test set&lt;/h3&gt;
+&lt;p&gt;Our results are off from the ground truth. Most of the ground truth averages are negative, but we predict on average positive values of asset ownership.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;&#34; srcset=&#34;
+               /media/asset_4_hu38952b2385dfb143bb0c6e98a7340310_104807_e096b15545effeefa20f2f48508594c6.jpg 400w,
+               /media/asset_4_hu38952b2385dfb143bb0c6e98a7340310_104807_aba89d39a0116df39d6d9da06a8e5d69.jpg 760w,
+               /media/asset_4_hu38952b2385dfb143bb0c6e98a7340310_104807_1200x1200_fit_q75_lanczos.jpg 1200w&#34;
+               src=&#34;https://nicolas-suarez.github.io/media/asset_4_hu38952b2385dfb143bb0c6e98a7340310_104807_e096b15545effeefa20f2f48508594c6.jpg&#34;
+               width=&#34;760&#34;
+               height=&#34;586&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;h2 id=&#34;concluding-remarks-and-future-work&#34;&gt;Concluding remarks and future work&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;We trained a ResNet-18 model with Landsat-8 satellite imagery to predict asset ownership in Africa. We modified the original ResNet-18 architecture so we could train it for a regression task, and we used transfer learning to take advantage of the pretrained ResNet-18 weights.&lt;/li&gt;
+&lt;li&gt;The performance of our best model is much better than the performance of our baseline models, but the model might be overfitting, and the predictions it generates are off from our ground truth data. We obtained lower $R^2$ validation set values than Yeh et al. (2020).&lt;/li&gt;
+&lt;li&gt;Future work on this might include expanding our sample size by including more years with DHS surveys, using more channels of our satellite images, increasing the regularization in our model, adding dropout probabilities to our nodes and tuning that hyperparameter.&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     
