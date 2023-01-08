@@ -38,18 +38,18 @@
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Set&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Training&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Validation&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Test&lt;/th&gt;
+&lt;th&gt;Set&lt;/th&gt;
+&lt;th&gt;Training&lt;/th&gt;
+&lt;th&gt;Validation&lt;/th&gt;
+&lt;th&gt;Test&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;Observations&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;9,941&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;1,243&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;1,242&lt;/td&gt;
+&lt;td&gt;Observations&lt;/td&gt;
+&lt;td&gt;9,941&lt;/td&gt;
+&lt;td&gt;1,243&lt;/td&gt;
+&lt;td&gt;1,242&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -81,7 +81,7 @@
 &lt;h2 id=&#34;models&#34;&gt;Models&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;We trained a Residual Network, a particular kind of a Convolutional Neural Network (CNN). We use transfer learning to initialize our model, and we adapt its architecture so we can use it for a regression task.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Residual Network (ResNet)}&lt;/strong&gt;: Type of CNN with a special architecture defined by  He et al. (2016). These kind of models are build by stacking &lt;strong&gt;Residual Blocks&lt;/strong&gt;, blocks of convolutional layers connected with activation functions, where the input of the block is then added to the output of the stacked convolutional layers at the end (see example in Figure 2). Residual blocks should help a deep CNN to avoid the performance problems associated with very deep networks, so if some of the final layers are not helping the model performance, their weights will be set to 0 and the block will become an identity mapping.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Residual Network (ResNet)&lt;/strong&gt;: Type of CNN with a special architecture defined by  He et al. (2016). These kind of models are build by stacking &lt;strong&gt;Residual Blocks&lt;/strong&gt;, blocks of convolutional layers connected with activation functions, where the input of the block is then added to the output of the stacked convolutional layers at the end (see example in Figure 2). Residual blocks should help a deep CNN to avoid the performance problems associated with very deep networks, so if some of the final layers are not helping the model performance, their weights will be set to 0 and the block will become an identity mapping.&lt;/li&gt;
 &lt;/ul&gt;
 
 
