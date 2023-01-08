@@ -710,16 +710,67 @@
 
     <div class="article-style">
       <p>This was our class project for Stanford CS229 &ldquo;Machine Learning&rdquo; class during the Fall 2022 quarter. The project was featured You can find our poster submission <a href="https://nicolas-suarez.github.io/files/asset_poster.pdf" target="_blank" rel="noopener">here</a>.</p>
-<h2 id="description">Description</h2>
-<p>This project examines the relationship between the level of ozone concentration
-in urban locations and their physical features through the use of Convolutional
-Neural Networks (CNNs). We train two models, including one trained on satellite
-imagery (&ldquo;Satellite CNN&rdquo;) to capture higher-level features such as the location&rsquo;s 
-geography, and the other trained on street-level imagery (&ldquo;Street CNN&rdquo;) to learn
-ground-level features such as motor vehicle activity. These features are then 
-concatenated to train neural network (&ldquo;Concat NN&rdquo;) on this shared representation
-and predict the location&rsquo;s level of ozone as measured in parts per billion.</p>
+<h2 id="introduction">Introduction</h2>
+<p>We predict asset ownership in Africa making use of Landsat-8 satellite imagery and ground truth data from the Demographic and Health Surveys (DHS). We trained a ResNet-18 model} (He et al., 2016), a sub-class of a Convolutional Neural Network (CNN), and used it to predict asset ownership levels over 6.72 km by 6.72 km patches of land in Africa. We used transfer learning to train our model to perform a regression task, initializing our model with weights originally used to classify images. The performance of our best model is much better than the performance of our baseline models, but our model might be overfitting, and the predictions it generates are far off from our ground truth data. We obtained lower $R^2$ validation set values than Yeh et al. (2020), a paper that attempts our same task.</p>
 <h2 id="data">Data</h2>
+<h1 id="ground-truth-demographic-and-health-surveys-dhs-surveys">Ground truth: Demographic and Health Surveys (DHS) surveys</h1>
+<ul>
+<li>We combined all the household DHS surveys for African countries that have been published since 2014 that have a matching file with the geocoordinates of each cluster.</li>
+<li>Our variable of interest is the score in the wealth index obtained by each household. This score is produced using Principal Component Analysis over  survey questions, including but not limited to access to drinkable water, sewerage, electricity, and ownership of farming and non-farming assets.</li>
+<li>We geocoded 12,511 locations across 24 countries, combining data from 26 DHS surveys between 2014 and 2021.</li>
+<li>In Panel (a) of Figure 1 we show the spatial distribution of our ground truth data.</li>
+</ul>
+<h1 id="satellite-images-landsat-8-surface-reflectance-collection">Satellite images: Landsat-8 Surface Reflectance collection</h1>
+<ul>
+<li>We retrieved imagery using the Google Earth Engine API. For each DHS cluster with a geocoded location, we defined a patch of 6.72 km by 6.72 km centered in our location, and we retrieved an image for the patch using the Landsat 8 Surface Reflectance Tier 1 Collection.</li>
+<li>We used 3 bands from this collection: Red, Green and Blue surface reflectance. We preprocessed each of our images by adding a cloud mask per pixel and then computing the per pixel and band mean composite of all the available images for the year when the DHS cluster was surveyed.</li>
+<li>We retrieved images for 12,426 locations across all Africa. In Figure Panels (b) and (c) of Figure 1 we show some examples of the cloud masked imagery we produced.</li>
+<li>We used an 80%, 10%, 10% training, validation and test data split. In the following table we show the sample sizes of our 3 sets:
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Set</th>
+<th style="text-align:center">Training</th>
+<th style="text-align:center">Validation</th>
+<th style="text-align:center">Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Observations</td>
+<td style="text-align:center">9,941</td>
+<td style="text-align:center">1,243</td>
+<td style="text-align:center">1,242</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="" srcset="
+               /media/asset_1_hu29b0469db94ec1933c1f284176f93c84_165256_4ecb1c08eeb24d6e11349aaa80e7597b.jpg 400w,
+               /media/asset_1_hu29b0469db94ec1933c1f284176f93c84_165256_d46adf3cd3a7b235ed9c9d4bf4a7f7ad.jpg 760w,
+               /media/asset_1_hu29b0469db94ec1933c1f284176f93c84_165256_1200x1200_fit_q75_lanczos.jpg 1200w"
+               src="/media/asset_1_hu29b0469db94ec1933c1f284176f93c84_165256_4ecb1c08eeb24d6e11349aaa80e7597b.jpg"
+               width="760"
+               height="638"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
 <p>We obtained ozone measurements (parts per billion) for 12,976 semi-unique locations with ozone levels information mostly located in North America from <a href="https://www.airnow.gov/" target="_blank" rel="noopener">AirNow</a>.</p>
 <p>Our satellite imagery dataset was constructed using the Google Earth Engine API: for each location labeled with an ozone reading, we retrieve one satellite image centered at that location from the Landsat 8 Surface Reflectance Tier 1 Collection with a resolution of 224 $\times$ 224 pixels which represents 6.72 km $\times$ 6.72 km.  We use 7 bands from this collection: RGB, ultra blue, near infrared, and two shortwave infrared bands. We preprocess each of our images by adding a cloud mask per pixel and then computing the per pixel and band mean composite of all the available images for the year 2020.</p>
 <p>The street-level imagery dataset was constructed using the Google Maps Street View API. For each location labeled with an ozone level, we randomly sample 10 geospatial points within 6.72 km from the measurement point.</p>
