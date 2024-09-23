@@ -17,7 +17,8 @@
       <link>https://nicolas-suarez.github.io/research/infrastructure_africa/</link>
       <pubDate>Sun, 22 Sep 2024 00:00:00 +0000</pubDate>
       <guid>https://nicolas-suarez.github.io/research/infrastructure_africa/</guid>
-      <description></description>
+      <description>&lt;p&gt;Access to basic infrastructure is a critical component of quality of life and an important measure of economic development. However, on-the-ground data about infrastructure access, especially in low-income countries, is often sparse and costly to collect. We train and calibrate a machine learning model to extract data on infrastructure access for each 6.72x6.72km area of Africa from satellite images. The model achieves accuracy levels of 77.1% to 84.7%. We show the value of this novel dataset with two applications. First, we use a spatial regression discontinuity design to study how much of the heterogeneity in infrastructure access &lt;em&gt;across countries&lt;/em&gt; comes from differences in institutional quality. Second, we study the role of political favoritism in explaining &lt;em&gt;within country&lt;/em&gt; heterogeneity.&lt;/p&gt;
+</description>
     </item>
     
     <item>
