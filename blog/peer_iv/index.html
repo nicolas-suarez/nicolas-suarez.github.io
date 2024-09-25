@@ -307,7 +307,7 @@
         content="2022-03-25T00:00:00&#43;00:00"
       />
     
-    <meta property="article:modified_time" content="2022-05-25T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-07-21T00:00:00&#43;00:00">
   
 
   
@@ -628,7 +628,7 @@
           Last updated on
       
     
-    May 25, 2022
+    Jul 21, 2023
   </span>
   
 
@@ -662,7 +662,10 @@
   <div class="article-container">
 
     <div class="article-style">
-      <p>For one of my research projects I was working on peer effects for college students, and I wanted to use the Generalized 2SLS procedure to estimate peer effects described in <a href="https://www.sciencedirect.com/science/article/pii/S0304407609000335" target="_blank" rel="noopener">Bramoullé, Y., Djebbari, H., &amp; Fortin, B. (2009). Identification of peer effects through social networks. Journal of econometrics, 150(1), 41-55.</a>. The problem is that this project required a lot of data work and cleaning, so I worked on it on Stata mostly, but there is not a lot of support for peer effects regressions on <code>Stata</code>, so I had to adapt the code of Bramoullé et al. (2009) on my own. I based my code on their article, and on the code shared on 
+      <h1 id="update">Update:</h1>
+<p>I presented an slightly updated version of this Stata package at the 2023 Stata Conference. You can find my presentation <a href="https://www.stata.com/meeting/us23/slides/US23_Suarez_Chavarria.pdf" target="_blank" rel="noopener">here</a> and the updated code <a href="https://github.com/nicolas-suarez/g2sls_stata_conference_us_23" target="_blank" rel="noopener">here</a>.</p>
+<h1 id="original-post">Original post:</h1>
+<p>For one of my research projects I was working on peer effects for college students, and I wanted to use the Generalized 2SLS procedure to estimate peer effects described in <a href="https://www.sciencedirect.com/science/article/pii/S0304407609000335" target="_blank" rel="noopener">Bramoullé, Y., Djebbari, H., &amp; Fortin, B. (2009). Identification of peer effects through social networks. Journal of econometrics, 150(1), 41-55.</a>. The problem is that this project required a lot of data work and cleaning, so I worked on it on Stata mostly, but there is not a lot of support for peer effects regressions on <code>Stata</code>, so I had to adapt the code of Bramoullé et al. (2009) on my own. I based my code on their article, and on the code shared on 
 <a href="https://rpubs.com/Nicolas_Gallo/549370" target="_blank" rel="noopener">Habiba Djebbari&rsquo;s website</a>.</p>
 <p>Here I share my code, some examples about how to use it, and a comparison of my code and the original <code>R</code> code used by the authors.</p>
 <p>To wrote this, I took advantage of Stata&rsquo;s new integration with Python and Jupyter Notebooks (more information on how to use this feature can be found <a href="https://www.stata.com/new-in-stata/jupyter-notebooks/" target="_blank" rel="noopener">here</a>). I also used the <a href="https://rpy2.github.io/" target="_blank" rel="noopener">rpy2 package</a> to run <code>R</code> commands inside a Jupyter notebook.</p>
@@ -695,7 +698,7 @@ Notes:
 
 Running C:\Program Files\Stata17/profile.do ...
 </code></pre>
-<h1 id="peer-iv-function">Peer IV function</h1>
+<h2 id="peer-iv-function">Peer IV function</h2>
 <p>To implement linear in means regressions, I wrote the <code>peer_iv</code> function. This function takes as inputs, as any other regression function, a dependent variable and independent variables, plus an adjacency matrix <code>G</code> to perform the calculations. This matrix has to be a <code>Mata</code> matrix object (<code>Stata</code> matrices have size limitations), and it is the only parameter that the user is forced to set. All the other parameters are optiontal: <code>row</code> allows us to row-normalize the adjacency matrix (so the sum of each row is 1, and we can interpret the product of a variable and the matrix as weighted means), the <code>fixed</code> option adds group level fixed effects, the <code>ols</code> option runs a regular OLS regression but with peer effects, so by using this we avoid creating new variables with average outcomes and regressors for the peers of each observation, and the <code>vardir</code> option allow us to pass variables directly to the regression with the <code>ols</code> option, so they won&rsquo;t have a peer effect (this can be used for instance to add dummies for fixed effects).</p>
 <p>The matrix generates an standard Stata regression output, containing coefficients, standard errors, p-values and all the relevant information, and it stores eclass results. This means that the output could be stored with custom commands like <code>outreg2</code>, <code>estout</code> or <code>esttab</code> that allow the user to build customizable output tables.</p>
 <pre><code class="language-python">%%stata
